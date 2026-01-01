@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="bg-animation-container"></div>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <img src="logo.png" alt="Logo" class="logo-img">
+                <h1>Internship Tracker</h1>
+            </div>
+            <div class="term-controls">
+                <select id="term-select" class="term-select"></select>
+                <button id="add-term-btn" class="secondary-btn icon-btn" title="Add New Term">+</button>
+                <button id="delete-term-btn" class="danger-btn icon-btn" title="Delete Current Term">🗑️</button>
+                <div style="width: 1px; height: 24px; background: var(--glass-border); margin: 0 0.5rem;"></div>
+                <select id="sort-select" class="term-select" style="min-width: 120px;">
+                    <option value="created-desc">Newest (Created)</option>
+                    <option value="created-asc">Oldest (Created)</option>
+                </select>
+            </div>
+            <button id="add-btn" class="primary-btn">+ New Application</button>
+        </header>
+        <section id="timeline-container" class="timeline-container">
+            <h2 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-secondary);">Application Timeline</h2>
+            <div id="timeline" class="timeline"></div>
+        </section>
+        <main class="board" id="board"></main>
+    </div>
+
+    <!-- Application Modal -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <h2 id="modal-title">Add Application</h2>
+            <form id="app-form">
+                <input type="hidden" id="app-id">
+                <div class="form-group">
+                    <label for="company">Company</label>
+                    <input type="text" id="company" required placeholder="e.g. Google">
+                </div>
+                <div class="form-group">
+                    <label for="position">Position</label>
+                    <input type="text" id="position" required placeholder="e.g. Software Engineer Intern">
+                </div>
+                <div style="border-top: 1px solid var(--glass-border); margin: 1.5rem 0 1rem 0;"></div>
+                <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-secondary);">Hiring Manager Info</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hm-name">Name</label>
+                        <input type="text" id="hm-name" placeholder="John Doe">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hm-email">Email</label>
+                        <input type="email" id="hm-email" placeholder="john@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="hm-linkedin">LinkedIn</label>
+                        <input type="url" id="hm-linkedin" placeholder="https://linkedin.com/in/john">
+                    </div>
+                </div>
+                <div style="border-bottom: 1px solid var(--glass-border); margin: 0 0 1.5rem 0;"></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <select id="status" style="flex: 1;">
+                                <option value="wishlist">Wishlist</option>
+                                <option value="applied" selected>Applied</option>
+                                <option value="interviewing">Interviewing</option>
+                                <option value="offer">Offer</option>
+                            </select>
+                            <label class="checkbox-container" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="reject-checkbox">
+                                <span style="color: var(--danger-color); font-weight: 600;">Rejected</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date Applied</label>
+                        <input type="date" id="date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="note">Notes</label>
+                    <textarea id="note" rows="3" placeholder="Referral, key contacts, or interview notes..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-file">Attachment (PDF)</label>
+                    <input type="file" id="app-file" accept=".pdf">
+                    <div id="file-display" class="file-display hidden">
+                        <span class="icon">📎</span>
+                        <span id="file-name-display"></span>
+                        <button type="button" id="remove-file-btn" class="text-btn danger-text">Remove</button>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-btn" class="secondary-btn">Cancel</button>
+                    <button type="submit" class="primary-btn">Save Application</button>
+                </div>
+                <button type="button" id="delete-btn" class="danger-btn hidden" style="margin-top: 1rem; width: 100%;">Delete Application</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Term Modal -->
+    <div id="term-modal-overlay" class="modal-overlay hidden">
+        <div class="modal term-modal">
+            <h2>Add New Term</h2>
+            <form id="term-form">
+                <div class="form-group">
+                    <label for="term-name">Term Name</label>
+                    <input type="text" id="term-name" required placeholder="e.g. Summer 2024">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-term-btn" class="secondary-btn">Cancel</button>
+                    <button type="submit" class="primary-btn">Create Term</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- AI Assistant Widget -->
+    <div class="ai-widget">
+        <button id="ai-toggle-btn" class="ai-toggle-btn">🤖</button>
+        <div id="ai-chat-window" class="ai-chat-window hidden">
+            <div class="ai-header">
+                <span>Internship AI</span>
+                <button id="ai-close-btn" class="text-btn">✕</button>
+            </div>
+            <div id="ai-messages" class="ai-messages">
+                <div class="ai-message bot">
+                    Hello! I can help you manage your applications.<br>
+                    Try saying: <i>"Add Software Engineer at Google"</i> or <i>"Show my offers"</i>.
+                </div>
+            </div>
+            <form id="ai-form" class="ai-input-area">
+                <input type="text" id="ai-input" placeholder="Type a command..." autocomplete="off">
+                <button type="submit" class="primary-btn icon-btn">➤</button>
+            </form>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
