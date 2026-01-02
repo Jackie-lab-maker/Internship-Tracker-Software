@@ -86,6 +86,10 @@ No frameworks. No dependencies. Fully client-side.
 ---
 <img width="2400" height="1378" alt="internship_tracker_new_ui_1767310320761" src="https://github.com/user-attachments/assets/b55342cd-4efa-4609-aebe-01c561fdb56f" />
 
+<p align="center">
+  <img src="public/logo.svg" alt="XYIntern Logo" width="180">
+</p>
+
 ## 📂 Project Structure
 
 ```text
@@ -94,6 +98,7 @@ XYIntern/
 ├── style.css
 ├── script.js
 └── assets/
+
 
 
 
